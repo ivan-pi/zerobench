@@ -28,4 +28,4 @@ timers.o: timers.c
 .phony: clean
 
 clean:
-	rm -f *.o roots *.txt
+	rm -f *.o *.mod *.txt roots 

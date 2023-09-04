@@ -215,9 +215,9 @@ do
     s = timestamp()
     do k = 1, niter
         do i = 1, n
-            !out(i) = pzeroin(0.0_dp,2.0_dp,myfun,tol,levels(i))
+            out(i) = pzeroin(0.0_dp,2.0_dp,myfun,tol,levels(i))
             !out(i) = pbrentq(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! Scipy Solver
-            out(i) = pzero(0.0_dp,2.0_dp,myfun,tol,levels(i))
+            !out(i) = pzero(0.0_dp,2.0_dp,myfun,tol,levels(i))
         end do
     end do
     runtime = timestamp() - s

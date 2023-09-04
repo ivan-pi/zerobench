@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import matplotlib.pyplot as plt
 import numpy as np
 import time
@@ -79,5 +81,5 @@ def fort_vs_brentq():
 
 if __name__ == '__main__':
     
-    #fort_vs_scipy()
-    fort_vs_brentq()
+    fort_vs_scipy()
+    #fort_vs_brentq()
