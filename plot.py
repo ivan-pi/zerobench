@@ -45,9 +45,12 @@ def fort_vs_scipy():
     ax.boxplot(results,sym="",labels=labels)
 
     ax.set_title("Completion time for N = {} root-finding problems".format(N))
+    
+    ax.set_xlabel("Root finder implementation")
     ax.set_ylabel("Time [s]")
     ax.set_yscale('log')
 
+    fig.subplots_adjust(bottom=0.2)
     fig.savefig("result.png")
 
     plt.show()
@@ -75,6 +78,7 @@ def fort_vs_brentq():
     #ax.set_yscale('log')
     ax.set_ylim(0)
 
+    fig.tight_layout()
     fig.savefig("result2.png")
 
     plt.show()
