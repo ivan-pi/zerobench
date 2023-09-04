@@ -1,6 +1,6 @@
 # Zerobench
 
-Benchmark of `zeroin` for discussion at: https://fortran-lang.discourse.group/t/using-reserved-words-as-variables/6398/55
+Benchmark of `zeroin` for discussion at: https://fortran-lang.discourse.group/t/using-reserved-words-as-variables/6398/56
 
 ## Run
 
