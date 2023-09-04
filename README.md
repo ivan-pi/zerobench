@@ -47,4 +47,4 @@ According to the source comments, the routines were tested with the FORTRAN H co
 
 - Lecture on Experiments and Data Presentation in High Performance Computing, Georg Hager NHR@FAU 2023: https://www.youtube.com/watch?v=y1n0IJZiPuw
 - 12 Ways to Fool the Masses with Irreproducible Results, Lorena Barba IPDPS21 keynote: https://www.youtube.com/watch?v=R2-GuH-6VFU
-- Lorena Barba (2023). Anti Patterns of Scientific Machine Learning to Fool the Masses:A Call for Open Science. https://lorenabarba.com/figshare/anti-patterns-of-scientific-machine-learning-to-fool-the-massesa-call-for-open-science/
+- Lorena Barba (2023). Anti Patterns of Scientific Machine Learning to Fool the Masses: A Call for Open Science. https://lorenabarba.com/figshare/anti-patterns-of-scientific-machine-learning-to-fool-the-massesa-call-for-open-science/

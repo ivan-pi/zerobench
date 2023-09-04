@@ -8,7 +8,7 @@ run_trial () {
 
 compile_and_run () {
     echo "Running example with flags: $1"
-    rm -f roots zeroin.o brentq.o
+    rm -f roots zeroin.o brentq.o toms748.o
     make FC=gfortran-13 CC=gcc-13 FFLAGS="$1" CFLAGS="$1"
     run_trial $2 | tee $3
 }

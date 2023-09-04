@@ -2,12 +2,17 @@
 
 FC = gfortran-13
 CC = gcc-13
+CXX = g++-13
 
 FFLAGS = -Wall -fcheck=all -O2
 CFLAGS = -Wall -O2
+CXXFLAGS = -Wall -O2 -std=c++20
 
-roots: roots.f90 zeroin.o timers.o root.o dzero.o d1mach.o brentq.o brent_zero.o
-	$(FC) -o $@ $(FFLAGS) $^
+BOOST_INC = -I/usr/local/include
+LDLIBS = -lstdc++
+
+roots: roots.f90 zeroin.o timers.o root.o dzero.o d1mach.o brentq.o brent_zero.o toms748.o
+	$(FC) -o $@ $(FFLAGS) $^ $(LDLIBS)
 
 zeroin.o: zeroin.f
 	$(FC) -c $(FFLAGS) $<
@@ -26,6 +31,10 @@ brent_zero.o: brent_zero.f
 # SciPy Zeros
 brentq.o: ./Zeros/brentq.c ./Zeros/zeros.h
 	$(CC) -c $(CFLAGS) $<
+
+# Boost
+toms748.o: toms748.c ./Zeros/zeros.h
+	$(CXX) -c $(CXXFLAGS) $(BOOST_INC) $<
 
 timers.o: timers.c
 	$(CC) -c $(CFLAGS) $<

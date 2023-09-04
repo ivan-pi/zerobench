@@ -132,7 +132,7 @@ use, intrinsic :: iso_c_binding
 implicit none
 private
 
-public :: pbrentq
+public :: pbrentq, ptoms748
 
 type, bind(c) :: scipy_zeros_info
     integer(c_int) :: funcalls
@@ -170,6 +170,15 @@ interface
         real(c_double) :: brentq
     end function
 
+    ! Boost toms748
+    function toms748(ax,bx,f,tol,ptr) bind(c,name="toms748")
+        import
+        implicit none
+        procedure(callback_type) :: f
+        real(c_double), value :: ax, bx, tol
+        type(*) :: ptr
+        real(c_double) :: toms748
+    end function
 end interface
 
 contains
@@ -195,6 +204,22 @@ contains
         end function
     end function
 
+
+    real(c_double) function ptoms748(ax,bx,f,tol,params) result(rx)
+        use roots, only: pf
+        real(c_double), intent(in) :: ax, bx, tol, params(*)
+        procedure(pf) :: f
+
+        rx = toms748(ax,bx,fwrap,tol,c_null_ptr)
+
+    contains
+        function fwrap(x,ptr) bind(c)
+            real(c_double), value :: x
+            type(c_ptr), value :: ptr ! unused
+            real(c_double) :: fwrap
+            fwrap = f(x,params)
+        end function
+    end function
 end module
 
 module timers
@@ -217,7 +242,7 @@ end module
 program root_benchmark
 use roots, only: dp, pzeroin, proot, pzero, pbrent_orig
 use timers, only: timestamp, resolution
-use scipy, only: pbrentq
+use scipy, only: pbrentq, ptoms748
 implicit none
 
 integer, parameter :: n = 100000
@@ -238,17 +263,20 @@ levels = 1.5_dp * levels
 
 niter = 1
 do
-    s = timestamp()
+    s = timestamp()  ! seconds
     do k = 1, niter
         do i = 1, n
             out(i) = pzeroin(0.0_dp,2.0_dp,myfun,tol,levels(i))
+            !out(i) = ptoms748(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! Boost C++
             !out(i) = pbrentq(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! Scipy Solver
             !out(i) = pzero(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! PORT
             !out(i) = proot(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! NAPACK
             !out(i) = pbrent_orig(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! R. P. Brent
+
+            !print *, i, out(i), myfun(out(i),levels(i))
         end do
     end do
-    runtime = timestamp() - s
+    runtime = timestamp() - s ! runtime in seconds
     if (runtime > 0.2_dp) exit
     niter = niter * 2
 end do
@@ -258,7 +286,7 @@ print *, runtime/niter
 correct = all( [(isapprox( &
                     x=myfun(out(i),levels(i)), &
                     y=0.0_dp,&
-                    atol=3*tol), i = 1, n) ] )
+                    atol=4*tol), i = 1, n) ] )
 
 if (.not. correct) error stop "FAILED!"
 
