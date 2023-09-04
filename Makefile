@@ -6,7 +6,7 @@ CC = gcc-13
 FFLAGS = -Wall -fcheck=all -O2
 CFLAGS = -Wall -O2
 
-roots: roots.f90 zeroin.o timers.o root.o dzero.o d1mach.o brentq.o
+roots: roots.f90 zeroin.o timers.o root.o dzero.o d1mach.o brentq.o brent_zero.o
 	$(FC) -o $@ $(FFLAGS) $^
 
 zeroin.o: zeroin.f
@@ -17,6 +17,11 @@ root.o: root.f
 	$(FC) -c $(FFLAGS) -freal-4-real-8 $<
 d1mach.o: d1mach.f90
 	$(FC) -c $(FFLAGS) $<
+
+# Brent's original translation from Algol
+# (does not converge)
+brent_zero.o: brent_zero.f
+	$(FC) -c $(FFLAGS) -freal-4-real-8 $<
 
 # SciPy Zeros
 brentq.o: ./Zeros/brentq.c ./Zeros/zeros.h

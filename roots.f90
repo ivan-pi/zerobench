@@ -4,7 +4,7 @@ implicit none
 private
 
 public :: dp, pf
-public :: pzeroin, pzero, proot
+public :: pzeroin, pzero, proot, pbrent_orig
 
 integer, parameter :: dp = kind(1.0d0)
 
@@ -58,6 +58,18 @@ interface
         real(dp) :: root
     end function
 
+    ! Brent's version from Algorithms for Minimization without Derivatives, 1973
+    ! (see brent_zero.f)
+    function ZERO (A, B, MACHEP, T, F)
+        import dp, zerofun
+        implicit none
+        real(dp), intent(in) :: a, b  ! Bracket
+        real(dp), intent(in) :: MACHEP
+        real(dp), intent(in) :: t     ! Tolerance
+        procedure(zerofun) :: f
+        real(dp) :: zero
+    end function
+
 end interface
 
 contains
@@ -97,6 +109,20 @@ contains
             fwrap = f(x,params)
         end function
     end function
+
+    real(dp) function pbrent_orig(ax,bx,f,tol,params) result(rx)
+        real(dp), intent(in) :: ax, bx, tol, params(*)
+        procedure(pf) :: f
+        real(dp), parameter :: macheps = epsilon(1.0_dp)
+        rx = zero(ax,bx,macheps,tol,fwrap)
+    contains
+        function fwrap(x)
+            real(dp), intent(in) :: x
+            real(dp) :: fwrap
+            fwrap = f(x,params)
+        end function
+    end function
+
 
 end module
 
@@ -189,7 +215,7 @@ end interface
 end module
 
 program root_benchmark
-use roots, only: dp, pzeroin, proot, pzero
+use roots, only: dp, pzeroin, proot, pzero, pbrent_orig
 use timers, only: timestamp, resolution
 use scipy, only: pbrentq
 implicit none
@@ -217,7 +243,9 @@ do
         do i = 1, n
             out(i) = pzeroin(0.0_dp,2.0_dp,myfun,tol,levels(i))
             !out(i) = pbrentq(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! Scipy Solver
-            !out(i) = pzero(0.0_dp,2.0_dp,myfun,tol,levels(i))
+            !out(i) = pzero(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! PORT
+            !out(i) = proot(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! NAPACK
+            !out(i) = pbrent_orig(0.0_dp,2.0_dp,myfun,tol,levels(i)) ! R. P. Brent
         end do
     end do
     runtime = timestamp() - s
